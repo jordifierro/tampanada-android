@@ -1,13 +1,16 @@
 package com.tampanada.radio
 
-import android.media.AudioManager
-import android.media.MediaPlayer
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.Window
-import android.media.AudioAttributes
-import android.os.Build
-import android.util.Log
+import com.google.android.exoplayer2.SimpleExoPlayer
+import kotlinx.android.synthetic.main.activity_main.*
+import com.google.android.exoplayer2.source.ProgressiveMediaSource
+import com.google.android.exoplayer2.upstream.DefaultDataSourceFactory
+import android.net.Uri
+import com.google.android.exoplayer2.util.Util
+
+
 
 
 class MainActivity : AppCompatActivity() {
@@ -18,27 +21,16 @@ class MainActivity : AppCompatActivity() {
         setContentView(R.layout.activity_main)
 
         val url = "http://vprbbc.streamguys.net/vprbbc24.mp3"
-        val player: MediaPlayer? = MediaPlayer()
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            player!!.setAudioAttributes(
-                AudioAttributes.Builder()
-                    .setUsage(AudioAttributes.USAGE_MEDIA)
-                    .setContentType(AudioAttributes.CONTENT_TYPE_MUSIC)
-                    .setLegacyStreamType(AudioManager.STREAM_MUSIC)
-                    .build()
-            )
-        } else {
-            player!!.setAudioStreamType(AudioManager.STREAM_MUSIC)
-        }
+        val player = SimpleExoPlayer.Builder(this).build()
+        playerView.player = player
 
-        player.setOnPreparedListener {
-            it.start()
-        }
-        player.setOnErrorListener( MediaPlayer.OnErrorListener { mediaPlayer, i, i2 ->
-            Log.e("tampa", "error " + i + i2)
-            false
-        })
-        player.setDataSource(url)
-        player.prepareAsync()
+        val dataSourceFactory = DefaultDataSourceFactory(this,
+            Util.getUserAgent(this, "com.tampanada.radio"))
+
+        val videoSource = ProgressiveMediaSource.Factory(dataSourceFactory)
+            .createMediaSource(Uri.parse(url))
+
+        player.prepare(videoSource)
+        player.playWhenReady = true
     }
 }
