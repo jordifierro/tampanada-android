@@ -8,6 +8,9 @@ import kotlinx.android.synthetic.main.activity_main.*
 import com.google.android.exoplayer2.source.ProgressiveMediaSource
 import com.google.android.exoplayer2.upstream.DefaultDataSourceFactory
 import android.net.Uri
+import android.view.View
+import com.google.android.exoplayer2.ExoPlayer
+import com.google.android.exoplayer2.Player
 import com.google.android.exoplayer2.util.Util
 
 
@@ -20,9 +23,9 @@ class MainActivity : AppCompatActivity() {
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         setContentView(R.layout.activity_main)
 
+
         val url = "http://vprbbc.streamguys.net/vprbbc24.mp3"
         val player = SimpleExoPlayer.Builder(this).build()
-        playerView.player = player
 
         val dataSourceFactory = DefaultDataSourceFactory(this,
             Util.getUserAgent(this, "com.tampanada.radio"))
@@ -30,7 +33,24 @@ class MainActivity : AppCompatActivity() {
         val videoSource = ProgressiveMediaSource.Factory(dataSourceFactory)
             .createMediaSource(Uri.parse(url))
 
+        player.addListener(object: Player.EventListener {
+            override fun onPlayerStateChanged(playWhenReady: Boolean, playbackState: Int) {
+                if(playbackState == ExoPlayer.STATE_READY){
+                    play.visibility = View.VISIBLE
+                }
+            }
+        })
         player.prepare(videoSource)
-        player.playWhenReady = true
+
+        play.setOnClickListener {
+            player.playWhenReady = true
+            play.visibility = View.INVISIBLE
+            pause.visibility = View.VISIBLE
+        }
+        pause.setOnClickListener {
+            player.playWhenReady = false
+            play.visibility = View.VISIBLE
+            pause.visibility = View.INVISIBLE
+        }
     }
 }
