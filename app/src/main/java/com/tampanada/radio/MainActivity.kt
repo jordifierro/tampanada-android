@@ -30,20 +30,30 @@ class MainActivity : AppCompatActivity() {
         val dataSourceFactory = DefaultDataSourceFactory(this,
             Util.getUserAgent(this, "com.tampanada.radio"))
 
-        val videoSource = ProgressiveMediaSource.Factory(dataSourceFactory)
+        val musicSource = ProgressiveMediaSource.Factory(dataSourceFactory)
             .createMediaSource(Uri.parse(url))
 
         player.addListener(object: Player.EventListener {
             override fun onPlayerStateChanged(playWhenReady: Boolean, playbackState: Int) {
                 if(playbackState == ExoPlayer.STATE_READY){
-                    play.visibility = View.VISIBLE
+                    if (playWhenReady) {
+                        play.visibility = View.INVISIBLE
+                        pause.visibility = View.VISIBLE
+                    }
+                    else {
+                        play.visibility = View.VISIBLE
+                        pause.visibility = View.INVISIBLE
+                    }
                 }
             }
         })
-        player.prepare(videoSource)
+        player.prepare(musicSource)
 
         play.setOnClickListener {
             player.playWhenReady = true
+            if (player.playbackState == ExoPlayer.STATE_IDLE) {
+                player.prepare(musicSource)
+            }
             play.visibility = View.INVISIBLE
             pause.visibility = View.VISIBLE
         }
