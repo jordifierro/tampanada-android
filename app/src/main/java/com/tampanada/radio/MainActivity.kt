@@ -24,7 +24,7 @@ class MainActivity : AppCompatActivity() {
         setContentView(R.layout.activity_main)
 
 
-        val url = "http://vprbbc.streamguys.net/vprbbc24.mp3"
+        val url = "http://c6.auracast.net:8340/radio.mp3"
         val player = SimpleExoPlayer.Builder(this).build()
 
         val dataSourceFactory = DefaultDataSourceFactory(this,
