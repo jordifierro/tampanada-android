@@ -23,7 +23,10 @@ class ForegroundService : Service() {
 
     companion object {
         const val ACTION_START_FOREGROUND_SERVICE = "ACTION_START_FOREGROUND_SERVICE"
+        const val ACTION_PAUSE_FOREGROUND_SERVICE = "ACTION_PAUSE_FOREGROUND_SERVICE"
         const val ACTION_STOP_FOREGROUND_SERVICE = "ACTION_STOP_FOREGROUND_SERVICE"
+        const val ACTION_STOP_FOREGROUND_SERVICE_IF_NOT_PLAYING =
+            "ACTION_STOP_FOREGROUND_SERVICE_IF_NOT_PLAYING"
     }
 
     override fun onCreate() {
@@ -37,6 +40,10 @@ class ForegroundService : Service() {
             when (intent.action) {
                 ACTION_START_FOREGROUND_SERVICE -> startForegroundService()
                 ACTION_STOP_FOREGROUND_SERVICE -> stopForegroundService()
+                ACTION_PAUSE_FOREGROUND_SERVICE -> pauseForegroundService()
+                ACTION_STOP_FOREGROUND_SERVICE_IF_NOT_PLAYING -> {
+                    if (!player.playWhenReady) stopForegroundService()
+                }
             }
         }
         return super.onStartCommand(intent, flags, startId)
@@ -48,7 +55,12 @@ class ForegroundService : Service() {
 
     private fun startForegroundService() {
         startPlayer()
-        startForeground(1, createNotification())
+        startForeground(1, createNotification(ACTION_PAUSE_FOREGROUND_SERVICE))
+    }
+
+    private fun pauseForegroundService() {
+        stopPlayer()
+        startForeground(1, createNotification(ACTION_START_FOREGROUND_SERVICE))
     }
 
     private fun stopForegroundService() {
@@ -57,7 +69,7 @@ class ForegroundService : Service() {
         stopSelf()
     }
 
-    private fun createNotification(): Notification {
+    private fun createNotification(action: String): Notification {
         val intent = Intent()
         val pendingIntent = PendingIntent.getActivity(this, 0, intent, 0)
         val builder: NotificationCompat.Builder = NotificationCompat.Builder(this)
@@ -73,12 +85,31 @@ class ForegroundService : Service() {
         builder.setPriority(Notification.PRIORITY_MAX)
         builder.setFullScreenIntent(pendingIntent, true)
 
+        when (action) {
+            ACTION_START_FOREGROUND_SERVICE -> {
+                val playIntent = Intent(this, ForegroundService::class.java)
+                playIntent.action = ACTION_START_FOREGROUND_SERVICE
+                val pendingPlayIntent = PendingIntent.getService(this, 0, playIntent, 0)
+                val playAction: NotificationCompat.Action =
+                    NotificationCompat.Action(android.R.drawable.ic_media_play, "Reproduís", pendingPlayIntent)
+                builder.addAction(playAction)
+            }
+            ACTION_PAUSE_FOREGROUND_SERVICE -> {
+                val pauseIntent = Intent(this, ForegroundService::class.java)
+                pauseIntent.action = ACTION_PAUSE_FOREGROUND_SERVICE
+                val pendingPauseIntent = PendingIntent.getService(this, 0, pauseIntent, 0)
+                val pauseAction: NotificationCompat.Action =
+                    NotificationCompat.Action(android.R.drawable.ic_media_pause, "Tin-ti", pendingPauseIntent)
+                builder.addAction(pauseAction)
+            }
+        }
+
         val stopIntent = Intent(this, ForegroundService::class.java)
         stopIntent.action = ACTION_STOP_FOREGROUND_SERVICE
-        val pendingPlayIntent = PendingIntent.getService(this, 0, stopIntent, 0)
-        val playAction: NotificationCompat.Action =
-            NotificationCompat.Action(android.R.drawable.ic_media_pause, "Atura", pendingPlayIntent)
-        builder.addAction(playAction)
+        val pendingStopIntent = PendingIntent.getService(this, 0, stopIntent, 0)
+        val stopAction: NotificationCompat.Action =
+            NotificationCompat.Action(android.R.drawable.ic_delete, "Fui", pendingStopIntent)
+        builder.addAction(stopAction)
 
         return builder.build()
     }
