@@ -16,20 +16,34 @@ class MainActivity : AppCompatActivity() {
         setContentView(R.layout.activity_main)
 
         play.setOnClickListener {
-            play.visibility = View.INVISIBLE
-            pause.visibility = View.VISIBLE
-
-            val intent = Intent(this, ForegroundService::class.java)
-            intent.action = ForegroundService.ACTION_START_FOREGROUND_SERVICE
-            startService(intent)
+            showPlayButton()
+            startService()
         }
         pause.setOnClickListener {
-            play.visibility = View.VISIBLE
-            pause.visibility = View.INVISIBLE
-
-            val intent = Intent(this, ForegroundService::class.java)
-            intent.action = ForegroundService.ACTION_STOP_FOREGROUND_SERVICE
-            startService(intent)
+            showPauseButton()
+            stopService()
         }
+    }
+
+    private fun showPlayButton() {
+        play.visibility = View.INVISIBLE
+        pause.visibility = View.VISIBLE
+    }
+
+    private fun showPauseButton() {
+        play.visibility = View.VISIBLE
+        pause.visibility = View.INVISIBLE
+    }
+
+    private fun startService() {
+        val intent = Intent(this, ForegroundService::class.java)
+        intent.action = ForegroundService.ACTION_START_FOREGROUND_SERVICE
+        startService(intent)
+    }
+
+    private fun stopService() {
+        val intent = Intent(this, ForegroundService::class.java)
+        intent.action = ForegroundService.ACTION_STOP_FOREGROUND_SERVICE
+        startService(intent)
     }
 }
