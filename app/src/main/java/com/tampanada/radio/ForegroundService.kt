@@ -47,6 +47,7 @@ class ForegroundService : Service() {
                     if (!player.playWhenReady) stopForegroundService()
                 }
             }
+            sendBroadcastWithState()
         }
         return super.onStartCommand(intent, flags, startId)
     }
@@ -148,5 +149,15 @@ class ForegroundService : Service() {
 
     private fun stopPlayer() {
         player.playWhenReady = false
+    }
+
+    private fun sendBroadcastWithState() {
+        val state =
+            if (player.playWhenReady) MainActivity.PlayerStateBroadCastReceiver.PLAYING
+            else MainActivity.PlayerStateBroadCastReceiver.PAUSED
+        val broadCastIntent = Intent()
+        broadCastIntent.action = MainActivity.PlayerStateBroadCastReceiver.BROADCAST_ACTION
+        broadCastIntent.putExtra(MainActivity.PlayerStateBroadCastReceiver.STATE, state);
+        sendBroadcast(broadCastIntent)
     }
 }
