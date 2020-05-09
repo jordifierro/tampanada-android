@@ -8,8 +8,10 @@ import android.graphics.BitmapFactory
 import android.net.Uri
 import android.os.IBinder
 import androidx.core.app.NotificationCompat
+import com.google.android.exoplayer2.C
 import com.google.android.exoplayer2.ExoPlayer
 import com.google.android.exoplayer2.SimpleExoPlayer
+import com.google.android.exoplayer2.audio.AudioAttributes
 import com.google.android.exoplayer2.source.ProgressiveMediaSource
 import com.google.android.exoplayer2.upstream.DefaultDataSourceFactory
 import com.google.android.exoplayer2.util.Util
@@ -91,6 +93,12 @@ class ForegroundService : Service() {
 
         musicSource = ProgressiveMediaSource.Factory(dataSourceFactory)
             .createMediaSource(Uri.parse(url))
+
+        val audioAttributes: AudioAttributes = AudioAttributes.Builder()
+            .setUsage(C.USAGE_MEDIA)
+            .setContentType(C.CONTENT_TYPE_SPEECH)
+            .build()
+        player.setAudioAttributes(audioAttributes, true)
 
         player.prepare(musicSource)
     }
