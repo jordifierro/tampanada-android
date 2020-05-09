@@ -9,7 +9,6 @@ import android.net.Uri
 import android.os.IBinder
 import androidx.core.app.NotificationCompat
 import com.google.android.exoplayer2.C
-import com.google.android.exoplayer2.ExoPlayer
 import com.google.android.exoplayer2.SimpleExoPlayer
 import com.google.android.exoplayer2.audio.AudioAttributes
 import com.google.android.exoplayer2.source.ProgressiveMediaSource
@@ -58,7 +57,7 @@ class ForegroundService : Service() {
         stopSelf()
     }
 
-    private fun createNotification() : Notification {
+    private fun createNotification(): Notification {
         val intent = Intent()
         val pendingIntent = PendingIntent.getActivity(this, 0, intent, 0)
         val builder: NotificationCompat.Builder = NotificationCompat.Builder(this)
@@ -92,6 +91,7 @@ class ForegroundService : Service() {
             Util.getUserAgent(this, "com.tampanada.radio"))
 
         musicSource = ProgressiveMediaSource.Factory(dataSourceFactory)
+            .setLoadErrorHandlingPolicy(RetryPolicy())
             .createMediaSource(Uri.parse(url))
 
         val audioAttributes: AudioAttributes = AudioAttributes.Builder()
@@ -105,9 +105,6 @@ class ForegroundService : Service() {
 
     private fun startPlayer() {
         player.playWhenReady = true
-        if (player.playbackState == ExoPlayer.STATE_IDLE) {
-            player.prepare(musicSource)
-        }
     }
 
     private fun stopPlayer() {
