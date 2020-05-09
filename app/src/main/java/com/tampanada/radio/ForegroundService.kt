@@ -23,6 +23,7 @@ class ForegroundService : Service() {
 
     companion object {
         const val ACTION_START_FOREGROUND_SERVICE = "ACTION_START_FOREGROUND_SERVICE"
+        const val ACTION_PLAY_FOREGROUND_SERVICE = "ACTION_PLAY_FOREGROUND_SERVICE"
         const val ACTION_PAUSE_FOREGROUND_SERVICE = "ACTION_PAUSE_FOREGROUND_SERVICE"
         const val ACTION_STOP_FOREGROUND_SERVICE = "ACTION_STOP_FOREGROUND_SERVICE"
         const val ACTION_STOP_FOREGROUND_SERVICE_IF_NOT_PLAYING =
@@ -39,6 +40,7 @@ class ForegroundService : Service() {
         if (intent != null) {
             when (intent.action) {
                 ACTION_START_FOREGROUND_SERVICE -> startForegroundService()
+                ACTION_PLAY_FOREGROUND_SERVICE -> playForegroundService()
                 ACTION_STOP_FOREGROUND_SERVICE -> stopForegroundService()
                 ACTION_PAUSE_FOREGROUND_SERVICE -> pauseForegroundService()
                 ACTION_STOP_FOREGROUND_SERVICE_IF_NOT_PLAYING -> {
@@ -54,13 +56,19 @@ class ForegroundService : Service() {
     }
 
     private fun startForegroundService() {
+        if (player.playWhenReady)
+            startForeground(1, createNotification(ACTION_PAUSE_FOREGROUND_SERVICE))
+        else  startForeground(1, createNotification(ACTION_PLAY_FOREGROUND_SERVICE))
+    }
+
+    private fun playForegroundService() {
         startPlayer()
         startForeground(1, createNotification(ACTION_PAUSE_FOREGROUND_SERVICE))
     }
 
     private fun pauseForegroundService() {
         stopPlayer()
-        startForeground(1, createNotification(ACTION_START_FOREGROUND_SERVICE))
+        startForeground(1, createNotification(ACTION_PLAY_FOREGROUND_SERVICE))
     }
 
     private fun stopForegroundService() {
@@ -86,9 +94,9 @@ class ForegroundService : Service() {
         builder.setFullScreenIntent(pendingIntent, true)
 
         when (action) {
-            ACTION_START_FOREGROUND_SERVICE -> {
+            ACTION_PLAY_FOREGROUND_SERVICE -> {
                 val playIntent = Intent(this, ForegroundService::class.java)
-                playIntent.action = ACTION_START_FOREGROUND_SERVICE
+                playIntent.action = ACTION_PLAY_FOREGROUND_SERVICE
                 val pendingPlayIntent = PendingIntent.getService(this, 0, playIntent, 0)
                 val playAction: NotificationCompat.Action =
                     NotificationCompat.Action(android.R.drawable.ic_media_play, "Reproduís", pendingPlayIntent)

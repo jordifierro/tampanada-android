@@ -17,12 +17,14 @@ class MainActivity : AppCompatActivity() {
 
         play.setOnClickListener {
             showPlayButton()
-            startService()
+            playService()
         }
         pause.setOnClickListener {
             showPauseButton()
             pauseService()
         }
+
+        startService()
     }
 
     override fun onDestroy() {
@@ -44,6 +46,12 @@ class MainActivity : AppCompatActivity() {
     private fun startService() {
         val intent = Intent(this, ForegroundService::class.java)
         intent.action = ForegroundService.ACTION_START_FOREGROUND_SERVICE
+        startService(intent)
+    }
+
+    private fun playService() {
+        val intent = Intent(this, ForegroundService::class.java)
+        intent.action = ForegroundService.ACTION_PLAY_FOREGROUND_SERVICE
         startService(intent)
     }
 
