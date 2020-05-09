@@ -94,8 +94,13 @@ class ForegroundService : Service() {
         bigTextStyle.bigText("L'emissora del Pallars")
         builder.setStyle(bigTextStyle)
         builder.setWhen(System.currentTimeMillis())
-        builder.setSmallIcon(R.mipmap.ic_launcher)
-        val largeIconBitmap = BitmapFactory.decodeResource(getResources(), R.mipmap.ic_launcher)
+        val smallIcon =
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                if (action == ACTION_PLAY_FOREGROUND_SERVICE) R.drawable.ic_pause else R.drawable.ic_play
+            }
+            else R.drawable.ic_notification
+        builder.setSmallIcon(smallIcon)
+        val largeIconBitmap = BitmapFactory.decodeResource(getResources(), R.drawable.ic_notification)
         builder.setLargeIcon(largeIconBitmap)
         builder.setPriority(Notification.PRIORITY_MAX)
         builder.setFullScreenIntent(pendingIntent, true)
@@ -123,7 +128,7 @@ class ForegroundService : Service() {
         stopIntent.action = ACTION_STOP_FOREGROUND_SERVICE
         val pendingStopIntent = PendingIntent.getService(this, 0, stopIntent, 0)
         val stopAction: NotificationCompat.Action =
-            NotificationCompat.Action(android.R.drawable.ic_delete, "Fui", pendingStopIntent)
+            NotificationCompat.Action(android.R.drawable.ic_lock_power_off, "Fui", pendingStopIntent)
         builder.addAction(stopAction)
 
         return builder.build()
