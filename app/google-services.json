@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "819864895390",
+    "firebase_url": "https://tampanada-radio.firebaseio.com",
+    "project_id": "tampanada-radio",
+    "storage_bucket": "tampanada-radio.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:819864895390:android:87985338006d3bf893e08f",
+        "android_client_info": {
+          "package_name": "com.tampanada.radio"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "819864895390-tuadc3r0u00ut3d5n7n6gch7r5eg56e5.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyC8xmV0L-7rudDOhvxc0R0_2R7_WgY5kn4"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "819864895390-tuadc3r0u00ut3d5n7n6gch7r5eg56e5.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
