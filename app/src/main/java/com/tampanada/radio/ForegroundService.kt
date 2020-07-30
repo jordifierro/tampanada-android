@@ -135,7 +135,7 @@ class ForegroundService : Service() {
     }
 
     private fun initializePlayer() {
-        val url = "http://c6.auracast.net:8340/radio.mp3"
+        val url = "https://c6.auracast.net/radio/8340/stream?1591800577"
         player = SimpleExoPlayer.Builder(this).build()
 
         val dataSourceFactory = DefaultDataSourceFactory(this,
