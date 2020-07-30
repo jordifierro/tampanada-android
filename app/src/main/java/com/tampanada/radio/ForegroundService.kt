@@ -83,15 +83,15 @@ class ForegroundService : Service() {
     private fun createNotification(action: String): Notification {
         val channelId =
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O)
-                createNotificationChannel("com.tampanada.radio", "Tampanada Radio")
+                createNotificationChannel(applicationContext.packageName, resources.getString(R.string.app_name))
             else ""
         val intent = Intent()
         val pendingIntent = PendingIntent.getActivity(this, 0, intent, 0)
         val builder: NotificationCompat.Builder = NotificationCompat.Builder(this, channelId)
 
         val bigTextStyle: NotificationCompat.BigTextStyle = NotificationCompat.BigTextStyle()
-        bigTextStyle.setBigContentTitle("Tampanada Radio")
-        bigTextStyle.bigText("L'emissora del Pallars")
+        bigTextStyle.setBigContentTitle(resources.getString(R.string.notification_title))
+        bigTextStyle.bigText(resources.getString(R.string.notification_text))
         builder.setStyle(bigTextStyle)
         builder.setWhen(System.currentTimeMillis())
         val smallIcon =
@@ -100,9 +100,9 @@ class ForegroundService : Service() {
             }
             else R.drawable.ic_notification
         builder.setSmallIcon(smallIcon)
-        val largeIconBitmap = BitmapFactory.decodeResource(getResources(), R.drawable.ic_notification)
+        val largeIconBitmap = BitmapFactory.decodeResource(resources, R.drawable.ic_notification)
         builder.setLargeIcon(largeIconBitmap)
-        builder.setPriority(Notification.PRIORITY_MAX)
+        builder.priority = Notification.PRIORITY_HIGH
         builder.setFullScreenIntent(pendingIntent, true)
 
         when (action) {
@@ -111,7 +111,9 @@ class ForegroundService : Service() {
                 playIntent.action = ACTION_PLAY_FOREGROUND_SERVICE
                 val pendingPlayIntent = PendingIntent.getService(this, 0, playIntent, 0)
                 val playAction: NotificationCompat.Action =
-                    NotificationCompat.Action(android.R.drawable.ic_media_play, "Reproduís", pendingPlayIntent)
+                    NotificationCompat.Action(android.R.drawable.ic_media_play,
+                                              resources.getString(R.string.notification_play),
+                                              pendingPlayIntent)
                 builder.addAction(playAction)
             }
             ACTION_PAUSE_FOREGROUND_SERVICE -> {
@@ -119,7 +121,9 @@ class ForegroundService : Service() {
                 pauseIntent.action = ACTION_PAUSE_FOREGROUND_SERVICE
                 val pendingPauseIntent = PendingIntent.getService(this, 0, pauseIntent, 0)
                 val pauseAction: NotificationCompat.Action =
-                    NotificationCompat.Action(android.R.drawable.ic_media_pause, "Tin-ti", pendingPauseIntent)
+                    NotificationCompat.Action(android.R.drawable.ic_media_pause,
+                                              resources.getString(R.string.notification_pause),
+                                              pendingPauseIntent)
                 builder.addAction(pauseAction)
             }
         }
@@ -128,18 +132,20 @@ class ForegroundService : Service() {
         stopIntent.action = ACTION_STOP_FOREGROUND_SERVICE
         val pendingStopIntent = PendingIntent.getService(this, 0, stopIntent, 0)
         val stopAction: NotificationCompat.Action =
-            NotificationCompat.Action(android.R.drawable.ic_lock_power_off, "Fui", pendingStopIntent)
+            NotificationCompat.Action(android.R.drawable.ic_lock_power_off,
+                                      resources.getString(R.string.notification_stop),
+                                      pendingStopIntent)
         builder.addAction(stopAction)
 
         return builder.build()
     }
 
     private fun initializePlayer() {
-        val url = "https://c6.auracast.net/radio/8340/stream?1591800577"
+        val url = resources.getString(R.string.streaming_url)
         player = SimpleExoPlayer.Builder(this).build()
 
         val dataSourceFactory = DefaultDataSourceFactory(this,
-            Util.getUserAgent(this, "com.tampanada.radio"))
+            Util.getUserAgent(this, applicationContext.packageName))
 
         musicSource = ProgressiveMediaSource.Factory(dataSourceFactory)
             .setLoadErrorHandlingPolicy(RetryPolicy())
@@ -168,7 +174,7 @@ class ForegroundService : Service() {
             else MainActivity.PlayerStateBroadCastReceiver.PAUSED
         val broadCastIntent = Intent()
         broadCastIntent.action = MainActivity.PlayerStateBroadCastReceiver.BROADCAST_ACTION
-        broadCastIntent.putExtra(MainActivity.PlayerStateBroadCastReceiver.STATE, state);
+        broadCastIntent.putExtra(MainActivity.PlayerStateBroadCastReceiver.STATE, state)
         sendBroadcast(broadCastIntent)
     }
 

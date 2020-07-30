@@ -1,0 +1,7 @@
+<resources>
+    <string name="notification_title">Tampanada Radio</string>
+    <string name="notification_text">L\'emissora del Pallars</string>
+    <string name="notification_play">Reproduís</string>
+    <string name="notification_pause">Tin-ti</string>
+    <string name="notification_stop">Fui</string>
+</resources>

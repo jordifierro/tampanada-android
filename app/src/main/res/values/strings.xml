@@ -1,3 +1,11 @@
 <resources>
-    <string name="app_name">Tampanada Radio</string>
+    <string name="app_name" translatable="false">Tampanada Radio</string>
+    <string name="website_url" translatable="false">http://www.tampanadaradio.com</string>
+    <string name="streaming_url" translatable="false">https://c6.auracast.net/radio/8340/stream?1591800577</string>
+
+    <string name="notification_title">Tampanada Radio</string>
+    <string name="notification_text">The Pallars station</string>
+    <string name="notification_play">Play</string>
+    <string name="notification_pause">Pause</string>
+    <string name="notification_stop">Stop</string>
 </resources>

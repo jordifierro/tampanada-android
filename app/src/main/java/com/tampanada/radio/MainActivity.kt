@@ -19,7 +19,7 @@ class MainActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        requestWindowFeature(Window.FEATURE_NO_TITLE);
+        requestWindowFeature(Window.FEATURE_NO_TITLE)
         setContentView(R.layout.activity_main)
 
         play.setOnClickListener {
@@ -32,7 +32,7 @@ class MainActivity : AppCompatActivity() {
         }
         logo.setOnClickListener {
             startActivity(Intent(Intent.ACTION_VIEW,
-                Uri.parse("http://www.tampanadaradio.com")))
+                Uri.parse(resources.getString(R.string.website_url))))
         }
 
         registerMyReceiver()
