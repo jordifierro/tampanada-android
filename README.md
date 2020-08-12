@@ -3,7 +3,12 @@
 ![Logo](http://tampanadaradio.com/wp-content/uploads/2018/12/TR_logo_blue.png)
 
 Welcome to Tampanada Radio, l'emissora del Pallars!
-This is the Android application for [Tampanada Radio project](http://tampanadaradio.com).
+
+This is the Android application for [Tampanada Radio](https://jordifierro.com/tampanada-radio)
+(there is also an [iOS version](https://github.com/jordifierro/tampanada-ios)).
+You can download the application from
+[Google Playstore](https://play.google.com/store/apps/details?id=com.tampanada.radio).
+
 It's a simple streaming player that works with a foreground service.
 Feel free to use the code for your own music streaming player!
 
